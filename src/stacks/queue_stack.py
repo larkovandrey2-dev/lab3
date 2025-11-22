@@ -7,6 +7,8 @@ class QueueStack:
         self.size = 0
     def push(self, value):
         self.queue.append(value)
+        new_min = value if not self.mins else min(value, self.mins[0])
+        self.mins.appendleft(new_min)
         for _ in range(len(self.queue) - 1):
             self.queue.append(self.queue.popleft())
             self.mins.appendleft(self.mins.pop())

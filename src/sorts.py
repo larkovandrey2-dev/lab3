@@ -94,7 +94,7 @@ def merge(left, right, key, cmp):
 def count_sort(a: list[int]) -> list[int]:
     mn = min(a)
     mx = max(a)
-    count: dict = {}
+    count: dict = {i: 0 for i in range(mn, mx+1)}
     sorted_l = []
     for x in a:
         count[x] += 1
