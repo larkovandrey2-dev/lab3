@@ -21,6 +21,20 @@ QUEUES: dict[str, type] = {
 
 
 def queue_action(queue: QueueInterface, action: str, value=None) -> Any:
+    """
+        Выполняет действие над очередью на основе переданной команды.
+
+        Args:
+            queue (QueueInterface): Объект очереди, реализующий QueueInterface.
+            action (str): Название действия ('enqueue', 'dequeue', 'front', 'size', 'empty').
+            value (Any, optional): Значение для добавления (только для 'enqueue'). По умолчанию None.
+
+        Returns:
+            Any: Результат выполнения действия (элемент очереди, размер, булево значение).
+
+        Raises:
+            ValueError: Если для 'enqueue' не передано значение или если передана неизвестная команда.
+        """
     if action == "enqueue":
         if value is None:
             raise ValueError("enqueue требует аргумент")

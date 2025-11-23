@@ -21,6 +21,20 @@ STACKS: dict[str, type] = {
 
 
 def stack_action(stack: StackInterface, action: str, value=None) -> Any:
+    """
+        Выполняет действие над стеком на основе переданной команды.
+
+        Args:
+            stack (StackInterface): Объект стека, реализующий StackInterface.
+            action (str): Название действия ('push', 'pop', 'peek', 'size', 'empty').
+            value (Any, optional): Значение для добавления (только для 'push'). По умолчанию None.
+
+        Returns:
+            Any: Результат выполнения действия (элемент стека, размер, булево значение).
+
+        Raises:
+            ValueError: Если для 'push' не передано значение или если передана неизвестная команда.
+        """
     if action == "push":
         if value is None:
             raise ValueError("push требует аргумент")

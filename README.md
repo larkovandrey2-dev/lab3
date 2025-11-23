@@ -92,23 +92,37 @@ CLI позволяет:
 
 ```bash
 # Сортировка конкретного массива
-python3 -m cli sort quick "[5,3,1,4]"
+python3 -m src.cli sort quick "[5,3,1,4]"
 
 # Сортировка с ключом и компаратором
-python3 -m cli sort quick "[5,-3,1]" --key abs --cmp reverse
+python3 -m src.cli sort quick "[5,-3,1]" --key abs --cmp reverse
+python -m src.cli sort bubble "[-10, 5, -2, 3]" --key abs --cmp desc
 
 # Генерация и сортировка массива
-python3 -m cli sort-generated quick --generator dups --size 15 --k-unique 5 --seed 123
+python3 -m src.cli sort-generated quick --generator dups --size 15 --k-unique 5 --seed 123
+python -m src.cli sort-generated merge --size 20 --generator random
 
 # Генерация массивов отдельно
-python3 -m cli gen rand 10 0 50
-python3 -m cli gen nearly 10 3
-python3 -m cli gen dups 10 5
-python3 -m cli gen rev 10
-python3 -m cli gen float 10 0 1
+python3 -m src.cli gen rand 10 0 50
+python3 -m src.cli gen nearly 10 3
+python3 -m src.cli gen dups 10 5
+python3 -m src.cli gen rev 10
+python3 -m src.cli gen float 10 0 1
 
 # Интерактивный стек
-python3 -m cli stack deque
+python3 -m src.cli stack deque
 
 # Интерактивная очередь
-python3 -m cli queue linked
+python3 -m src.cli queue linked
+
+# Бенчмарки
+
+# 1. Запуск стандартного набора тестов
+python -m src.cli bench
+
+# 2. Кастомный бенчмарк: сравнение QuickSort и MergeSort
+python -m src.cli bench-custom -a quick -a merge -s 100 -s 1000 -s 5000 --generator dups
+
+
+# Список всех комманд
+python -m src.cli --help

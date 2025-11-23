@@ -5,6 +5,19 @@ T = TypeVar('T')
 
 def bubble_sort(a: list[T], key: Callable[[T], Any] | None = None,
                 cmp: Callable[[Any, Any], int] | None = None) -> list[T]:
+    """
+        Сортировка пузырьком (Bubble Sort).
+        Проходит по списку многократно, сравнивая соседние элементы и меняя их местами,
+        если они стоят в неправильном порядке.
+
+        Args:
+            a (list[T]): Список для сортировки.
+            key (Callable, optional): Функция для извлечения ключа сравнения из элемента.
+            cmp (Callable, optional): Функция сравнения двух ключей (возвращает -1, 0, 1).
+
+        Returns:
+            list[T]: Отсортированный список.
+    """
     if key is None:
         def identity(x):
             return x
@@ -24,6 +37,19 @@ def bubble_sort(a: list[T], key: Callable[[T], Any] | None = None,
 
 def quick_sort(a: list[T], key: Callable[[T], Any] | None = None,
                cmp: Callable[[Any, Any], int] | None = None) -> list[T]:
+    """
+        Быстрая сортировка (Quick Sort).
+        Выбирает опорный элемент,
+        разделяет массив на три части (меньше, равно, больше опорного) и рекурсивно сортирует их.
+
+        Args:
+            a (list[T]): Исходный список.
+            key (Callable, optional): Функция для извлечения ключа сравнения.
+            cmp (Callable, optional): Функция сравнения.
+
+        Returns:
+            list[T]: Новый отсортированный список.
+        """
     n = len(a)
     if key is None:
         def identity(x):
@@ -55,6 +81,19 @@ def quick_sort(a: list[T], key: Callable[[T], Any] | None = None,
     return quick_sort(left, key, cmp) + middle + quick_sort(right, key, cmp)
 def merge_sort(a: list[T], key: Callable[[T], Any] | None = None,
                cmp: Callable[[Any, Any], int] | None = None) -> list[T]:
+    """
+        Сортировка слиянием (Merge Sort).
+        Рекурсивно делит список пополам до единичных элементов, а затем собирает
+        их обратно в отсортированном порядке.
+
+        Args:
+            a (list[T]): Исходный список.
+            key (Callable, optional): Функция ключа.
+            cmp (Callable, optional): Функция сравнения.
+
+        Returns:
+            list[T]: Новый отсортированный список.
+    """
     n = len(a)
     if key is None:
         def identity(x):
@@ -69,6 +108,18 @@ def merge_sort(a: list[T], key: Callable[[T], Any] | None = None,
     right = merge_sort(a[mid:],key,cmp)
     return merge(left,right,key,cmp)
 def merge(left, right, key, cmp):
+    """
+        Вспомогательная функция для слияния двух отсортированных списков.
+
+        Args:
+            left (list): Левая часть списка.
+            right (list): Правая часть списка.
+            key (Callable): Функция ключа.
+            cmp (Callable, optional): Функция сравнения.
+
+        Returns:
+            list: Объединенный отсортированный список.
+        """
     sorted_l = []
     i = j = 0
     while i < len(left) and j < len(right):
@@ -92,6 +143,17 @@ def merge(left, right, key, cmp):
     return sorted_l
 
 def count_sort(a: list[int]) -> list[int]:
+    """
+        Сортировка подсчетом (Counting Sort).
+        Работает только с целыми числами. Подсчитывает вхождения каждого числа
+        и восстанавливает список.
+
+        Args:
+            a (list[int]): Список целых чисел.
+
+        Returns:
+            list[int]: Новый отсортированный список.
+    """
     mn = min(a)
     mx = max(a)
     count: dict = {i: 0 for i in range(mn, mx+1)}
@@ -103,6 +165,18 @@ def count_sort(a: list[int]) -> list[int]:
     return sorted_l
 
 def radix_sort(a: list[int], base:int = 10) -> list[int]:
+    """
+        Поразрядная сортировка (Radix Sort).
+        Сортирует числа, обрабатывая разряды от младшего к старшему.
+        Поддерживает отрицательные числа.
+
+        Args:
+            a (list[int]): Список целых чисел.
+            base (int, optional): Основание системы счисления. По умолчанию 10.
+
+        Returns:
+            list[int]: Новый отсортированный список.
+    """
     n = len(a)
     if n <= 1:
         return a
@@ -112,6 +186,17 @@ def radix_sort(a: list[int], base:int = 10) -> list[int]:
     return result
 
 def radix_sort_help(a: list[int], base:int) -> list[int]:
+    """
+        Вспомогательная функция для Radix Sort (LSD - начинаем с младшего разряда).
+        Работает только с неотрицательными числами.
+
+        Args:
+            a (list[int]): Список неотрицательных чисел.
+            base (int): Основание системы счисления.
+
+        Returns:
+            list[int]: Отсортированный список.
+    """
     n = len(a)
     res = []
     if n <= 1:
@@ -126,6 +211,18 @@ def radix_sort_help(a: list[int], base:int) -> list[int]:
         a = res
     return res
 def bucket_sort(a: list[float], buckets: int | None = None) -> list[float]:
+    """
+        Блочная (вёдерная) сортировка (Bucket Sort).
+        Распределяет элементы по блокам, нормализуя значения к диапазону [0, 1],
+        затем сортирует каждый блок отдельно (с помощью quick_sort).
+
+        Args:
+            a (list[float]): Список чисел (обычно float).
+            buckets (int, optional): Количество блоков. Если None, равно длине списка.
+
+        Returns:
+            list[float]: Новый отсортированный список.
+    """
     if not a:
         return []
 
@@ -157,6 +254,17 @@ def bucket_sort(a: list[float], buckets: int | None = None) -> list[float]:
 def heapify(a: list[T], n: int, i: int,
             key: Callable[[T], Any] | None = None,
             cmp: Callable[[Any, Any], int] | None = None) -> None:
+    """
+        Преобразует поддерево с корнем в индексе i в двоичную кучу.
+        Используется в пирамидальной сортировке.
+
+        Args:
+            a (list[T]): Список элементов.
+            n (int): Размер кучи (может быть меньше длины списка).
+            i (int): Индекс корня поддерева.
+            key (Callable, optional): Функция ключа.
+            cmp (Callable, optional): Функция сравнения.
+        """
     if key is None:
         def identity(x):
             return x
@@ -181,6 +289,19 @@ def heapify(a: list[T], n: int, i: int,
 
 def heap_sort(a: list[T], key: Callable[[T], Any] | None = None,
               cmp: Callable[[Any, Any], int] | None = None) -> list[T]:
+    """
+        Пирамидальная сортировка (Heap Sort).
+        Строит max-heap из списка, затем поочередно извлекает максимальный элемент
+        (корень кучи) и помещает его в конец массива.
+
+        Args:
+            a (list[T]): Список для сортировки.
+            key (Callable, optional): Функция ключа.
+            cmp (Callable, optional): Функция сравнения.
+
+        Returns:
+            list[T]: Отсортированный список.
+    """
     if key is None:
         def identity(x):
             return x
