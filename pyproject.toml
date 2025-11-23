@@ -1,0 +1,9 @@
+[project]
+name = "labs"
+version = "0.1.0"
+description = "Lab #3: sorts, structs and cli."
+requires-python = ">=3.12"
+dependencies = [
+    "typer>=0.20.0",
+    "rich>=14.2.0",
+]
