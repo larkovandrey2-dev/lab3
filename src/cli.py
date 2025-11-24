@@ -222,7 +222,7 @@ def queue(impl: str):
     q = QueueClass()
 
     typer.echo(f"\n Очередь создана: {impl}")
-    typer.echo("Команды: enqueue X | dequeue | front | size | empty | quit")
+    typer.echo("Команды: enqueue X | dequeue | front | size | empty | min | quit")
 
     while True:
         cmd = typer.prompt("queue> ")
@@ -258,7 +258,7 @@ def stack(impl: str):
     s = StackClass()
 
     typer.echo(f"\n Стек создан: {impl}")
-    typer.echo("Команды: push X | pop | peek | size | empty | quit")
+    typer.echo("Команды: push X | pop | peek | size | empty | min | quit")
 
     while True:
         cmd = typer.prompt("stack> ")
