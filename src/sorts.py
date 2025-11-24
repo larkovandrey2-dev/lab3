@@ -59,8 +59,18 @@ def quick_sort(a: list[T], key: Callable[[T], Any] | None = None,
 
     if n <= 1:
         return a
-    pivot = a[n//2]
-    pivot_key = key(pivot)
+    idx_first = 0
+    idx_middle = n // 2
+    idx_last = n - 1
+    k1 = key(a[idx_first])
+    k2 = key(a[idx_middle])
+    k3 = key(a[idx_last])
+    if (k1 <= k2 <= k3) or (k3 <= k2 <= k1):
+        pivot_key = k2
+    elif (k2 <= k1 <= k3) or (k3 <= k1 <= k2):
+        pivot_key = k1
+    else:
+        pivot_key = k3
     left,right,middle = [],[],[]
     for x in a:
         x_key = key(x)

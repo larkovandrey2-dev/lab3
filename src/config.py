@@ -18,13 +18,13 @@ GENERATORS = {
     "float": rand_float_array
 }
 ALGOS: Dict[str, Callable[..., list]] =  {
-    "bubble": bubble_sort,
     "quick": quick_sort,
     "merge": merge_sort,
     "heap": heap_sort,
     "count": count_sort,
     "radix": radix_sort,
-    "bucket": bucket_sort
+    "bucket": bucket_sort,
+    "bubble": bubble_sort
 }
 KEYS: Dict[str, Callable[[Any], Any]] = {
     "identity": lambda x: x,

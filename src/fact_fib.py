@@ -10,6 +10,9 @@ def factorial_recursive(n):
     """
     if n == 0:
         return 1
+    if n >= 900:
+        raise ValueError("Too big for recursion.")
+
     return n * factorial_recursive(n - 1)
 def fib_recursive(n):
     """
@@ -25,6 +28,8 @@ def fib_recursive(n):
         return 1
     if n == 1:
         return 1
+    if n >= 45:
+        raise ValueError("Too big for recursion.")
     return fib_recursive(n - 1) + fib_recursive(n - 2)
 def factorial_iterative(n):
     """
@@ -50,6 +55,7 @@ def fib_iterative(n):
         Returns:
             int: Число Фибоначчи.
     """
+
     if n <= 1:
         return n
     else:

@@ -20,20 +20,28 @@ def fib(n: int = typer.Argument(..., help="Номер числа Фибонач�
         Выводит n-ое число Фибоначчи, вычисленное двумя способами:
         рекурсивным и итеративным алгоритмами.
     """
-    fib_rec = fact_fib.fib_recursive(n)
-    fib_iter = fact_fib.fib_iterative(n)
-    typer.echo(f"Fibonacci recursive {n}: {fib_rec}\n"
-               f"Fibonacci iterative {n}: {fib_iter}")
+    try:
+        fib_rec = fact_fib.fib_recursive(n)
+        fib_iter = fact_fib.fib_iterative(n)
+        typer.echo(f"Fibonacci recursive {n}: {fib_rec}\n"
+                   f"Fibonacci iterative {n}: {fib_iter}")
+    except Exception as e:
+        typer.echo(e)
+        typer.Exit(1)
 @app.command(help="Вычисляет факториал числа (рекурсивно и итеративно).")
 def fact(n: int = typer.Argument(..., help="Число для вычисления факториала")):
     """
         Выводит факториал числа n, вычисленный двумя способами:
         рекурсивным и итеративным алгоритмами.
     """
-    fact_rec = fact_fib.factorial_recursive(n)
-    fact_iter = fact_fib.factorial_iterative(n)
-    typer.echo(f"Factorial recursive {n}: {fact_rec}\n"
-               f"Factorial iterative {n}: {fact_iter}")
+    try:
+        fact_rec = fact_fib.factorial_recursive(n)
+        fact_iter = fact_fib.factorial_iterative(n)
+        typer.echo(f"Factorial recursive {n}: {fact_rec}\n"
+                   f"Factorial iterative {n}: {fact_iter}")
+    except Exception as e:
+        typer.echo(e)
+        typer.Exit(1)
 
 
 @app.command(help="Сортирует массив, заданный вручную в формате JSON.")
@@ -73,7 +81,10 @@ def sort(
     if (key_name or cmp_name) and (algo in ["count", "radix", "bucket"]):
         typer.echo(f"Sort algorithm '{algo}' does not support keys/comparators")
         raise typer.Exit(1)
-    res = ALGOS[algo](arr, key=key_func, cmp=cmp_func)
+    if algo in ["count", "radix", "bucket"]:
+        res = ALGOS[algo](arr.copy())
+    else:
+        res = ALGOS[algo](arr.copy(),key=key_func, cmp=cmp_func)
     typer.echo(res)
 
 
@@ -133,7 +144,10 @@ def sort_generated(
     if (key_name or cmp_name) and (algo in ["count", "radix", "bucket"]):
         typer.echo(f"Sort algorithm '{algo}' does not support keys/comparators")
         raise typer.Exit(1)
-    sorted_arr = ALGOS[algo](arr.copy(),key=key_func, cmp=cmp_func)
+    if algo in ["count", "radix", "bucket"]:
+        sorted_arr = ALGOS[algo](arr.copy())
+    else:
+        sorted_arr = ALGOS[algo](arr.copy(),key=key_func, cmp=cmp_func)
     typer.echo(f"Sorted array: {sorted_arr}")
 
 
@@ -182,10 +196,12 @@ def bench():
         на фиксированных массивах (random, reverse, nearly, dups).
     """
     arrays = {
-        "small_random": rand_int_array(200, 0, 100),
-        "reverse": reverse_sorted(500),
-        "nearly": nearly_sorted(500, 10),
-        "dups": many_duplicates(500, k_unique=5),
+        "small_random": rand_int_array(1000, 0, 100),
+        "big_random": rand_int_array(5000, 0, 100),
+        "reverse": reverse_sorted(1000),
+        "nearly": nearly_sorted(1000, 10),
+        "dups": many_duplicates(1000, k_unique=5),
+        "dups_big": many_duplicates(8000, k_unique=5),
     }
 
     results = benchmark_sorts(arrays, ALGOS)
@@ -271,7 +287,7 @@ def stack(impl: str):
 @app.command(help="Запускает кастомный бенчмарк на серии размеров.")
 def bench_custom(
         algos: list[str] = typer.Option(None, "--algo", "-a", help="Algorithms to test. If empty, runs all."),
-        generator: str = typer.Option("random", help="Generator type: random|nearly|reverse|dups|float"),
+        generator: list[str] = typer.Option("random", help="Generator type: random|nearly|reverse|dups|float"),
         sizes: list[int] = typer.Option([100, 1000, 5000], "--size", "-s", help="Sizes of arrays to generate"),
         lo: float = typer.Option(0.0, help="Lower bound"),
         hi: float = typer.Option(100.0, help="Upper bound"),
@@ -299,24 +315,24 @@ def bench_custom(
     arrays_to_test = {}
     actual_seed = seed if seed is not None else random.randint(0, 1_000_000)
     typer.echo(f"Running benchmark with seed: {actual_seed}")
+    for gen in generator:
+        for size in sizes:
+            label = f"{gen}_size_{size}"
+            if gen == "random":
+                arr = rand_int_array(size, int(lo), int(hi), distinct=distinct, seed=actual_seed)
+            elif gen == "nearly":
+                arr = nearly_sorted(size, swaps, seed=actual_seed)
+            elif gen == "reverse":
+                arr = reverse_sorted(size)
+            elif gen == "dups":
+                arr = many_duplicates(size, k_unique=k_unique, seed=actual_seed)
+            elif gen == "float":
+                arr = rand_float_array(size, lo, hi, seed=actual_seed)
+            else:
+                typer.echo(f"Неизвестный генератор: {gen}")
+                raise typer.Exit(1)
 
-    for size in sizes:
-        label = f"{generator}_size_{size}"
-        if generator == "random":
-            arr = rand_int_array(size, int(lo), int(hi), distinct=distinct, seed=actual_seed)
-        elif generator == "nearly":
-            arr = nearly_sorted(size, swaps, seed=actual_seed)
-        elif generator == "reverse":
-            arr = reverse_sorted(size)
-        elif generator == "dups":
-            arr = many_duplicates(size, k_unique=k_unique, seed=actual_seed)
-        elif generator == "float":
-            arr = rand_float_array(size, lo, hi, seed=actual_seed)
-        else:
-            typer.echo(f"Неизвестный генератор: {generator}")
-            raise typer.Exit(1)
-
-        arrays_to_test[label] = arr
+            arrays_to_test[label] = arr
     results = benchmark_sorts(arrays_to_test, selected_algos)
     typer.echo(json.dumps(results, indent=4))
 
